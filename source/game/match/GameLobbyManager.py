@@ -6,6 +6,7 @@ from typing import List
 
 from source.game.actors.Country import Country
 from source.game.actors.Player import Player
+from source.game.chat.Chat import Chat
 from source.game.lobby.Lobby import Lobby
 from source.game.match.Match import Match
 from source.object_scopes.Singleton import Singleton
@@ -14,12 +15,14 @@ from source.object_scopes.Singleton import Singleton
 class GameLobbyManager(metaclass=Singleton):
     def __init__(self):
         # Load if there is any running matches in database
-        self.__lobby = Lobby([], [])
+        # Load if there is any chat in course. Else create one
+        self.__lobby = Lobby([], [], Chat(uuid.uuid4()))  # TODO: Find if lobby has a chat. Else create a new one
 
     def create_match(self, owner: Player, name: str):
         # Generate random ID for the match
         match_uid = uuid.uuid4()
-        new_match = Match(match_uid, name, self.__populate_default_countries(), owner, None, True)
+        # If we're creating a match, a new chat will be required to be created anew each time
+        new_match = Match(match_uid, name, self.__populate_default_countries(), owner, None, True, Chat(uuid.uuid4()))
         self.__lobby.matches.append(new_match)
         # Update all players in lobby
 

@@ -6,12 +6,15 @@
 
 from typing import List
 
+import websockets
+
 from source.game.player.Command import Command
 
 
 class Player:
     last_commands: List[Command]
 
-    def __init__(self, p_id, websocket_client):
+    # TODO: Implementar algum delegate pra não depender especificamente desse websocket
+    def __init__(self, p_id, websocket_client: websockets.WebSocketServerProtocol):
         self.p_id = p_id
         self.client = websocket_client

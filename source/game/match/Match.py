@@ -8,13 +8,14 @@ from typing import List, Optional
 
 from source.game.actors.Country import Country
 from source.game.actors.Player import Player
+from source.game.chat.Chat import Chat
 
 
 class Match:
     __winner = Optional[Player]
 
     def __init__(self, match_id, name: str, countries: List[Country], owner: Player,
-                 finishing_time: Optional[datetime], is_open: bool):
+                 finishing_time: Optional[datetime], is_open: bool, chat: Chat):
         self.match_id = match_id
         self.__name = name
         self.__countries = countries
@@ -22,6 +23,7 @@ class Match:
         self.__start_time = datetime.datetime.now()
         self.__finishing_time = finishing_time
         self.is_open = is_open  # Players can only join open matches
+        self.chat = chat
 
     def finish(self):
         self.__finishing_time = datetime.datetime.now()
