@@ -4,7 +4,7 @@ import websockets
 from dotenv import load_dotenv
 from websockets.legacy.server import WebSocketServerProtocol
 
-from Bootstrap import Bootstrap
+from source.game.GameInitializer import GameInitializer
 from source.game.match.MatchManager import MatchManager
 
 
@@ -38,11 +38,15 @@ async def handler(websocket):
         except websockets.ConnectionClosedOK:
             break
 
-bootstrap = Bootstrap()
+
 load_dotenv('.app-env')
+game_initializer: GameInitializer
 
 
 async def main():
+    global game_initializer
+    game_initializer = GameInitializer()
+    # Start Network (redo in Netowrk class)
     async with websockets.serve(handler, "", 8001):
         await asyncio.Future()  # run forever
 

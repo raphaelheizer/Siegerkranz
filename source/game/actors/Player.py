@@ -4,13 +4,13 @@
     in a match
 """
 
-from typing import Optional
+from typing import List
 
 from source.game.player.Command import Command
 
 
 class Player:
-    last_command: Optional[Command]
+    last_commands: List[Command]
 
     def __init__(self, p_id, websocket_client):
         self.p_id = p_id

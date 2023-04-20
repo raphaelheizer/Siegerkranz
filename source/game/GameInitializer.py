@@ -1,4 +1,4 @@
-class Bootstrap:
+class GameInitializer:
     # Load Services
     # Initialize web application
     pass

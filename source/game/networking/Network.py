@@ -3,7 +3,7 @@ import os
 
 import websockets
 
-from Bootstrap import Bootstrap
+from source.game.GameInitializer import Bootstrap
 
 bootstrap = Bootstrap()
 
