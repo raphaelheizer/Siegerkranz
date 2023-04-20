@@ -3,8 +3,7 @@
     user on behalf of its data and non-match actions. The Country Actor is the primary vessel for actions
     in a match
 """
-
-from typing import List
+from queue import Queue
 
 import websockets
 
@@ -12,7 +11,8 @@ from source.game.player.Command import Command
 
 
 class Player:
-    last_commands: List[Command]
+    # Player queues commands by a limit of actions by second, so we won't spam the server
+    last_commands: Queue[Command]
 
     # TODO: Implementar algum delegate pra não depender especificamente desse websocket
     def __init__(self, p_id, websocket_client: websockets.WebSocketServerProtocol):
