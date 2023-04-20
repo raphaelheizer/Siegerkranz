@@ -1,4 +1,9 @@
-# Player driven, main class. Serves as vessel to all player actions
+"""
+    Vessel for player's actions in a match.
+    This is a player driven, main class. No other entities actions should be taken for the purpose of
+    progressing in a match
+"""
+
 from typing import List
 
 from source.game.actors import State

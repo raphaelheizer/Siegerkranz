@@ -1,3 +1,7 @@
+"""
+    The region a given country is localized in
+"""
+
 from source.game.actors.Continent import Continent
 
 

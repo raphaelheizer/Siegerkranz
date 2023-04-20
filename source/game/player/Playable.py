@@ -1,3 +1,7 @@
+"""
+    Defines what should be controlled by the player in-match
+"""
+
 from abc import ABC
 from typing import Optional
 
