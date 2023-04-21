@@ -1,12 +1,23 @@
+from websockets.legacy.server import WebSocketServerProtocol
+
+from source.game.command.CommandProcessor import CommandProcessor
 from source.game.match.GameLobbyManager import GameLobbyManager
+from source.game.networking.Network import Network
+from source.object_scopes.Singleton import Singleton
 
-lobby_manager: GameLobbyManager
 
+class GameInitializer(metaclass=Singleton):
+    lobby_manager: GameLobbyManager
+    network: Network
+    command_processor: CommandProcessor
 
-class GameInitializer:
-    # Load server lobby
-    lobby_manager = GameLobbyManager()
-    # Load command processor
-    # --- TODO: LOAD THE COMMAND PROCESSOR ---
+    async def initialize(self):
+        # Initializes network module with command processor
+        # Load server lobby
+        self.lobby_manager = GameLobbyManager()
+        self.command_processor = CommandProcessor()
+        self.network = Network()
+        await self.network.start(self.process_command)
 
-    pass
+    async def process_command(self, message: str, issuer: WebSocketServerProtocol):
+        await self.command_processor.parse_command(message, issuer)

@@ -1,31 +1,42 @@
 import asyncio
-import os
+import datetime
+from typing import Callable, List
 
 import websockets
+from websockets.legacy.server import WebSocketServerProtocol
 
-from source.game.GameInitializer import Bootstrap
-
-bootstrap = Bootstrap()
+from source.object_scopes.Singleton import Singleton
 
 
-class Network:
-    server = None
+class Network(metaclass=Singleton):
+    on_message_callback: Callable = None
+    __connections: List[websockets.WebSocketServerProtocol] = list()
+    server: websockets = websockets
 
-    async def start_server(self):
-        port = os.getenv('SERVER_PORT', 5256)
-        async with websockets.serve(self.handler, "", port) as server:
-            self.server = server
-            await asyncio.Future()  # game loop
+    @property
+    def connections(self):
+        return self.__connections
 
-    async def handler(self):
+    async def listener(self, websocket: WebSocketServerProtocol):
+        message = await websocket.recv()
+        await self.on_message_callback(message, websocket)
+        await self.listener(websocket)
+
+    async def handler(self, websocket):
         while True:
-            task_listener = asyncio.create_task(self.message_listener())
+            task_listener = asyncio.create_task(self.listener(websocket))
+            connection: WebSocketServerProtocol = websocket
+            self.connections.append(connection)
+            print(f"Player {connection.request_headers['playername']} has just joined the server")
             try:
+                # Any server-sent actions must be async and joined in asyncio.gather
                 await asyncio.gather(task_listener)
             except websockets.ConnectionClosedOK:
+                self.connections.remove(connection)
+                print(f"Player {connection.request_headers['playername']} disconnected at {datetime.datetime.now()}")
                 break
 
-    async def message_listener(self):
-        msg = await self.server.recv()
-        # interpret messages
-        await self.message_listener()
+    async def start(self, on_message_callback: Callable):
+        async with websockets.serve(self.handler, "", 8001):
+            self.on_message_callback = on_message_callback
+            await asyncio.Future()  # Network Game Loop
