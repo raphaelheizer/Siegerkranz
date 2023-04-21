@@ -27,13 +27,13 @@ class Network(metaclass=Singleton):
             task_listener = asyncio.create_task(self.listener(websocket))
             connection: WebSocketServerProtocol = websocket
             self.connections.append(connection)
-            print(f"Player {connection.request_headers['playername']} has just joined the server")
+            print(f"Player {connection.request_headers['player_name']} joined the server at {datetime.datetime.now()}")
             try:
                 # Any server-sent actions must be async and joined in asyncio.gather
                 await asyncio.gather(task_listener)
             except websockets.ConnectionClosedOK:
                 self.connections.remove(connection)
-                print(f"Player {connection.request_headers['playername']} disconnected at {datetime.datetime.now()}")
+                print(f"Player {connection.request_headers['player_name']} disconnected at {datetime.datetime.now()}")
                 break
 
     async def start(self, on_message_callback: Callable):
