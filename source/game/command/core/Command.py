@@ -1,28 +1,20 @@
 import datetime
-from typing import Callable
+from abc import ABCMeta, abstractmethod
 
 from source.game.actors.Player import Player
 
 
-class Command:
+class Command(metaclass=ABCMeta):
     finished = False
 
-    def __init__(self, issuer: Player, action: Callable = None):
-        self.__action = action
+    def __init__(self, issuer: Player):
         self.time_stamp = datetime.datetime.now()
         self.__issuer = issuer
 
-    @property
-    def action(self) -> Callable:
-        return self.action
-
-    @action.setter
-    def action(self, action: Callable):
-        self.action = action
-
-    async def execute(self) -> None:
-        if self.__action is None:
-            print('No action executed for player' + self.__issuer.name)
-            return
-        await self.action()
+    async def handle(self):
+        await self.execute()
         self.finished = True
+
+    @abstractmethod
+    async def execute(self) -> None:
+        pass
