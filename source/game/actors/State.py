@@ -1,8 +1,4 @@
-from source.game.actors.Player import Player
-
-
 class State:
 
-    def __init__(self, name: str, owner: Player):
+    def __init__(self, name: str):
         self.name = name
-        self.__owner = owner

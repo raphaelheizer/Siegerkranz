@@ -20,4 +20,4 @@ class GameInitializer(metaclass=Singleton):
         await self.network.start(self.process_command)
 
     async def process_command(self, message: str, issuer: WebSocketServerProtocol):
-        await self.command_processor.parse_command(message, issuer)
+        pass

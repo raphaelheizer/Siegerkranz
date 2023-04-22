@@ -4,6 +4,9 @@
     in a match
 """
 from queue import Queue
+from typing import List
+
+import websockets
 
 from source.game.command.Command import Command
 
@@ -11,7 +14,14 @@ from source.game.command.Command import Command
 class Player:
     # Player queues commands by a limit of actions by second, so we won't spam the server
     last_commands: Queue[Command]
+    channels: List[str]
 
-    # TODO: Implementar algum delegate pra não depender especificamente desse websocket
-    def __init__(self, p_id):
-        self.p_id = p_id
+    def __init__(self, name, client: websockets.WebSocketServerProtocol):
+        self.name = name
+        self.client: websockets.WebSocketServerProtocol = client
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return f"player_name: {self.name}, wsid: {self.client.id}"
