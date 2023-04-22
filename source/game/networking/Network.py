@@ -44,6 +44,6 @@ class Network(metaclass=Singleton):
                 break
 
     async def start(self, on_receive_client_message: Callable):
-        async with websockets.serve(self.handler, "", 8001):
+        async with websockets.serve(self.handler, "", 5266):
             self.on_message_callback = on_receive_client_message
             await asyncio.Future()  # Network Game Loop

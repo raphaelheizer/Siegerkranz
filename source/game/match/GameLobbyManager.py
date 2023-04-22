@@ -16,7 +16,7 @@ class GameLobbyManager(metaclass=Singleton):
     def __init__(self):
         # Load if there is any running matches in database
         # Load if there is any chat in course. Else create one
-        self.__lobby = Lobby([], Chat(uuid.uuid4()))  # TODO: Find if lobby has a chat. Else create a new one
+        self.__lobby = Lobby([], Chat(uuid.uuid4()))
 
     def create_match(self, owner: Player, name: str):
         # Generate random ID for the match
