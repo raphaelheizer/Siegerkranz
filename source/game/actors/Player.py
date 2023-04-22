@@ -8,7 +8,7 @@ from typing import List
 
 import websockets
 
-from source.game.command.Command import Command
+from source.game.command.core.Command import Command
 
 
 class Player:

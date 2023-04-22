@@ -27,5 +27,5 @@ class MatchManager(metaclass=Singleton):
 
     async def list_matches(self, issuer: websockets.WebSocketServerProtocol):
         open_matches = [x for x in self.matches if x.is_open is True]
-        issuer.send(open_matches.__repr__())
+        await issuer.send(open_matches.__repr__())
         return self.matches

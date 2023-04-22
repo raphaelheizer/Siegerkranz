@@ -21,7 +21,8 @@ class Network(metaclass=Singleton):
 
     async def listener(self, websocket: WebSocketServerProtocol):
         message = await websocket.recv()
-        await self.on_message_callback(message, websocket)
+        issuer: Player = [p for p in self.players if p.client.id == websocket.id][0]
+        await self.on_message_callback(message, issuer)
         await self.listener(websocket)
 
     async def handler(self, websocket: WebSocketServerProtocol):
@@ -32,7 +33,6 @@ class Network(metaclass=Singleton):
             joined_player = Player(websocket.request_headers['player_name'], connection)
             self.players.append(joined_player)
             print(f"Player {connection.request_headers['player_name']} joined the server at {datetime.datetime.now()}")
-            print(f'Connected players: {self.players.__repr__()}')
             try:
                 # Any server-sent actions must be async and joined in asyncio.gather
                 await asyncio.gather(task_listener)
@@ -43,7 +43,7 @@ class Network(metaclass=Singleton):
                 print(f"Player {connection.request_headers['player_name']} disconnected at {datetime.datetime.now()}")
                 break
 
-    async def start(self, on_message_callback: Callable):
+    async def start(self, on_receive_client_message: Callable):
         async with websockets.serve(self.handler, "", 8001):
-            self.on_message_callback = on_message_callback
+            self.on_message_callback = on_receive_client_message
             await asyncio.Future()  # Network Game Loop
