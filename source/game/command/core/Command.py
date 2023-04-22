@@ -1,10 +1,16 @@
 import datetime
 from typing import Callable
 
+from source.game.actors.Player import Player
+
 
 class Command:
-    __action: Callable
     finished = False
+
+    def __init__(self, issuer: Player, action: Callable = None):
+        self.__action = action
+        self.time_stamp = datetime.datetime.now()
+        self.__issuer = issuer
 
     @property
     def action(self) -> Callable:
@@ -14,9 +20,9 @@ class Command:
     def action(self, action: Callable):
         self.action = action
 
-    def __init__(self):
-        self.time_stamp = datetime.datetime.now()
-
     async def execute(self) -> None:
+        if self.__action is None:
+            print('No action executed for player' + self.__issuer.name)
+            return
         await self.action()
         self.finished = True
