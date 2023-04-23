@@ -6,15 +6,11 @@ from source.game.actors.Player import Player
 
 class Command(metaclass=ABCMeta):
     finished = False
+    name: str
 
-    def __init__(self, issuer: Player):
+    def __init__(self):
         self.time_stamp = datetime.datetime.now()
-        self.__issuer = issuer
-
-    async def handle(self):
-        await self.execute()
-        self.finished = True
 
     @abstractmethod
-    async def execute(self) -> None:
+    async def execute(self, issuer: Player, **kwargs) -> None:
         pass

@@ -19,4 +19,4 @@ class GameInitializer(metaclass=Singleton):
         await self.network.start(on_receive_client_message=self.process_command)
 
     async def process_command(self, message: str, issuer: Player):
-        self.command_processor.interpret(message, issuer)
+        await self.command_processor.interpret(message, issuer)
