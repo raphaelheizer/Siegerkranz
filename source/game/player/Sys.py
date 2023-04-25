@@ -1,0 +1,2 @@
+class Sys:
+    name = 'SYSTEM'

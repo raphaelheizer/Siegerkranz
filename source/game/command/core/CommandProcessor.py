@@ -2,6 +2,8 @@ from asyncio import Queue
 from typing import List
 
 from source.game.actors.Player import Player
+from source.game.command.command_tree.JoinLobby import JoinLobby
+from source.game.command.command_tree.SendMessageLobby import SendMessageLobby
 from source.game.command.core.ClassLoader import ClassLoader
 from source.game.command.core.Command import Command
 from source.game.command.core.CommandQueueWatcher import CommandQueueWatcher
@@ -19,8 +21,11 @@ class CommandProcessor(metaclass=Singleton):
 
     def __init__(self):
         self.command_queue_watcher = CommandQueueWatcher(self.commands)
-        self.class_loader = ClassLoader[Command]('../command_tree')
-        self.available = self.class_loader.load()
+        self.class_loader = ClassLoader[Command]('./source/game/command/command_tree')
+        self.available = {
+            'JOIN_LOBBY': JoinLobby(),
+            'SND_MSG_LB': SendMessageLobby()
+        }
 
     async def interpret(self, message: str, issuer: Player) -> None:
         # Tokenize command
@@ -35,5 +40,9 @@ class CommandProcessor(metaclass=Singleton):
         await self.execute(issuer, action, **args)
 
     async def execute(self, issuer: Player, action: str, **kwargs):
-        current_command = [cmd for cmd in self.available if cmd.name == action][0]
-        await current_command.execute(issuer, **kwargs)
+        current_command: Command
+        try:
+            current_command = self.available[action]
+            await current_command.execute(issuer, **kwargs)
+        except KeyError:
+            print(f'Unknown command "{str(action)}"')
