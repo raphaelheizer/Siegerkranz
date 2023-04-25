@@ -26,6 +26,7 @@ class Lobby(metaclass=Singleton):
             self.__joined_players.append(player)
             self.chat.connected_players.append(player)
             await self.chat.broadcast(f'Player {player.name} joined the lobby', player)
+            await player.client.send('{matches:' + str(self.matches) + '}')
 
     async def remove_player(self, player: Player):
         self.__joined_players.remove(player)

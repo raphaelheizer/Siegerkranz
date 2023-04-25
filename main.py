@@ -13,5 +13,6 @@ async def main():
     game_initializer = GameInitializer()
     await game_initializer.initialize()
 
+
 if __name__ == "__main__":
     asyncio.run(main())

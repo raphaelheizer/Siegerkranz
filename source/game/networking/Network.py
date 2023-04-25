@@ -6,6 +6,7 @@ import websockets
 from websockets.legacy.server import WebSocketServerProtocol
 
 from source.game.actors.Player import Player
+from source.game.command.core.CommandProcessor import CommandProcessor
 from source.object_scopes.Singleton import Singleton
 
 
@@ -14,6 +15,7 @@ class Network(metaclass=Singleton):
     __connections: List[websockets.WebSocketServerProtocol] = list()
     server: websockets = websockets
     players: List[Player] = []
+    command_processor = CommandProcessor()
 
     @property
     def connections(self):
@@ -38,8 +40,9 @@ class Network(metaclass=Singleton):
                 await asyncio.gather(task_listener)
             except websockets.ConnectionClosedOK:
                 self.connections.remove(connection)
-                player = [p for p in self.players if p.client.id == connection.id]
-                self.players.remove(player[0])
+                players = [p for p in self.players if p.client.id == connection.id]
+                self.players.remove(players[0])
+                await self.command_processor.execute(players[0], 'DISCON_ALL', **{})
                 print(f"Player {connection.request_headers['player_name']} disconnected at {datetime.datetime.now()}")
                 break
 
