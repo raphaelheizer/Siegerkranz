@@ -1,3 +1,8 @@
+"""
+    Determines who is in a match and how the server should handle game requisitions
+    Players must not know what match they're joined in. Player commands shall be parsed and determined
+    via match manager to ensure no player will be able to rogue actions
+"""
 import threading
 import uuid
 from typing import List

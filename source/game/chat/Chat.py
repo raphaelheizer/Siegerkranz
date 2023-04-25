@@ -26,21 +26,20 @@ class Chat:
         self.lock.release()
 
     async def broadcast(self, message: str, issuer: Player = None):
+        issuer_name = await self.determine_issuer(issuer)
         for player in self.connected_players:
-            issuer_name: str
-            if issuer is None:
-                issuer_name = self.system
-            else:
-                issuer_name = issuer.name
             await player.client.send(
                 '{from:"' + issuer_name + '",message:"' + message + '",timestamp:' + str(datetime.datetime.now()) + '}')
 
     async def private_message(self, message: str, issuer: Union[Player, 'Sys'], receiver: Player):
+        issuer_name = await self.determine_issuer(issuer)
+        await receiver.client.send(
+            '{from:"' + issuer_name + '",message:"' + message + '",timestamp:' + str(datetime.datetime.now()) + '}')
+
+    async def determine_issuer(self, issuer):
         issuer_name: str
-        if isinstance(issuer, Sys):
+        if issuer is None:
             issuer_name = self.system
         else:
             issuer_name = issuer.name
-
-        await receiver.client.send(
-            '{from:"' + issuer_name + '",message:"' + message + '",timestamp:' + str(datetime.datetime.now()) + '}')
+        return issuer_name

@@ -1,10 +1,8 @@
 from asyncio import Queue
-from typing import List
 
 from source.game.actors.Player import Player
 from source.game.command.command_tree.JoinLobby import JoinLobby
 from source.game.command.command_tree.SendMessageLobby import SendMessageLobby
-from source.game.command.core.ClassLoader import ClassLoader
 from source.game.command.core.Command import Command
 from source.game.command.core.CommandQueueWatcher import CommandQueueWatcher
 from source.game.networking.Network import Network
@@ -13,7 +11,13 @@ from source.object_scopes.Singleton import Singleton
 
 class CommandProcessor(metaclass=Singleton):
     network = Network()
-    available = List[Command]
+
+    # Can't think of a better way right now. I'm sandboxing this game engine to further improve
+    # my knowledge about basic game server mechanics
+    available = {
+        'JOIN_LOBBY': JoinLobby(),
+        'SND_MSG_LB': SendMessageLobby()
+    }
 
     # Apply COMMAND pattern
     # command queue
@@ -21,11 +25,6 @@ class CommandProcessor(metaclass=Singleton):
 
     def __init__(self):
         self.command_queue_watcher = CommandQueueWatcher(self.commands)
-        self.class_loader = ClassLoader[Command]('./source/game/command/command_tree')
-        self.available = {
-            'JOIN_LOBBY': JoinLobby(),
-            'SND_MSG_LB': SendMessageLobby()
-        }
 
     async def interpret(self, message: str, issuer: Player) -> None:
         # Tokenize command
