@@ -1,7 +1,7 @@
 """
     Representation of a server's lobby and all matches available at a time. It should be unique in a server
 """
-
+import uuid
 from typing import List
 
 from source.game.actors.Player import Player
@@ -14,9 +14,9 @@ from source.object_scopes.Singleton import Singleton
 class Lobby(metaclass=Singleton):
     matches = MatchManager().matches
 
-    def __init__(self, joined_players: List[Player] = None, chat: Chat = None):
-        self.__joined_players: List[Player] = joined_players
-        self.chat = chat
+    def __init__(self):
+        self.__joined_players: List[Player] = []
+        self.chat = Chat(uuid.uuid4())
 
     async def join_player(self, player: Player):
         if self.__joined_players.__contains__(player):

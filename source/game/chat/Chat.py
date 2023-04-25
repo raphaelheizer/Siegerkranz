@@ -26,12 +26,16 @@ class Chat:
         self.lock.release()
 
     async def broadcast(self, message: str, issuer: Player = None):
+        if message == '' or message is None:
+            return
         issuer_name = await self.determine_issuer(issuer)
         for player in self.connected_players:
             await player.client.send(
                 '{from:"' + issuer_name + '",message:"' + message + '",timestamp:' + str(datetime.datetime.now()) + '}')
 
     async def private_message(self, message: str, issuer: Union[Player, 'Sys'], receiver: Player):
+        if message == '' or message is None:
+            return
         issuer_name = await self.determine_issuer(issuer)
         await receiver.client.send(
             '{from:"' + issuer_name + '",message:"' + message + '",timestamp:' + str(datetime.datetime.now()) + '}')
