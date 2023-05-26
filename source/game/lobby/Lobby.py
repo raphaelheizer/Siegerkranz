@@ -15,20 +15,20 @@ class Lobby(metaclass=Singleton):
     matches = MatchManager().matches
 
     def __init__(self):
-        self.__joined_players: List[Player] = []
+        self.joined_players: List[Player] = []
         self.chat = Chat(uuid.uuid4())
 
     async def join_player(self, player: Player):
-        if self.__joined_players.__contains__(player):
+        if self.joined_players.__contains__(player):
             await self.chat.private_message('Player already in lobby', Sys(), player)
             return
         else:
-            self.__joined_players.append(player)
+            self.joined_players.append(player)
             self.chat.connected_players.append(player)
             await self.chat.broadcast(f'Player {player.name} joined the lobby', player)
-            await player.client.send('{matches:' + str(self.matches) + '}')
+            await player.client.send('{matches:' + self.matches.__repr__() + '}')
 
     async def remove_player(self, player: Player):
-        self.__joined_players.remove(player)
+        self.joined_players.remove(player)
         await self.chat.remove_player(player)
         await self.chat.broadcast(f'Player {player} has left the game', player)

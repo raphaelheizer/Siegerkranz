@@ -18,16 +18,23 @@ class GameLobbyManager(metaclass=Singleton):
         # TODO: Load if there is any chat in course. Else create one
         self.__lobby = Lobby()
 
-    def create_match(self, owner: Player, name: str):
+    async def create_match(self, owner: Player, name: str):
         # Generate random ID for the match
         match_uid = uuid.uuid4()
         # If we're creating a match, a new chat will be required to be created anew each time
-        new_match = Match(match_uid, name, self.__populate_countries(), owner, Chat(uuid.uuid4()), None, [])
+        new_match = Match(match_uid, name, await self.__populate_countries(), owner, Chat(uuid.uuid4()), None, [])
         self.__lobby.matches.append(new_match)
-        # TODO: Update all players in lobby
+        await self.notify_players()
 
-    def __populate_countries(self) -> List[Country]:
-        pass
+    async def delete_match(self, match_id):
+        deleting_match = filter(lambda match: match.match_id == match_id, self.__lobby.matches)
+        self.__lobby.matches.remove(deleting_match)
 
-    def delete_match(self, match_id):
+        await self.notify_players()
+
+    async def notify_players(self):
+        for player in self.__lobby.joined_players:
+            await player.client.send(self.__lobby.matches.__repr__())
+
+    async def __populate_countries(self) -> List[Country]:
         pass

@@ -34,7 +34,9 @@ class Match:
     def set_winner(self, winner: Player):
         pass
 
+    def __repr__(self):
+        return self.__str__()
+
     def __str__(self):
-        return f'''
-            match_id: {self.match_id}, name: {self.__name}
-        '''
+        return f'match_id={self.match_id}|name={self.__name}|countries={self.__countries.__str__()}|' \
+               f'owner={self.__owner.name}|player_count={len(self.players)}|match_open={self.is_open}'

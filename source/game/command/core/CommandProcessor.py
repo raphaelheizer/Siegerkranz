@@ -1,7 +1,8 @@
 from asyncio import Queue
 
 from source.game.actors.Player import Player
-from source.game.command.command_tree.DisonnectFromAll import DisconnectFromAll
+from source.game.command.command_tree.CreateMatch import CreateMatch
+from source.game.command.command_tree.DisconnectFromAll import DisconnectFromAll
 from source.game.command.command_tree.JoinLobby import JoinLobby
 from source.game.command.command_tree.SendMessageLobby import SendMessageLobby
 from source.game.command.core.Command import Command
@@ -15,7 +16,8 @@ class CommandProcessor(metaclass=Singleton):
     available = {
         'DISCON_ALL': DisconnectFromAll(),
         'JOIN_LOBBY': JoinLobby(),
-        'SND_MSG_LB': SendMessageLobby()
+        'SND_MSG_LB': SendMessageLobby(),
+        'CRT_MATCH': CreateMatch(),
     }
 
     # Apply COMMAND pattern
